@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postinstall": "npx typesync"
   },
   "dependencies": {
     "autoprefixer": "^10.4.1",
@@ -15,6 +16,7 @@
     "postcss": "^8.4.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-modal": "^3.14.4",
     "tailwindcss": "^3.0.8"
   },
   "devDependencies": {
@@ -23,6 +25,7 @@
     "@types/prettier": "^2.4.2",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "@types/react-modal": "^3.13.1",
     "@typescript-eslint/eslint-plugin": "4.23.0",
     "@typescript-eslint/parser": "4.23.0",
     "eslint": "^7.26.0",
