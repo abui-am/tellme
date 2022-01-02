@@ -1,13 +1,18 @@
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { AiOutlineGif } from 'react-icons/ai';
 import { FiX } from 'react-icons/fi';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { selectImgUrl, selectPostMessage, setMessage } from '@/redux/slices/postMessageSlice';
 
 import { Button } from '../Button';
 import TenorSearch from '../tenor/TenorSearch';
 import Modal, { ModalProps } from './Modal';
 
 const CreateMessageModal: React.FC<ModalProps> = ({ ...props }) => {
+  const imageUrl = useSelector(selectImgUrl);
+
   return (
     <div
       style={{ width: '100vw', height: typeof window !== 'undefined' ? window.innerHeight : '100w' }}
@@ -37,10 +42,38 @@ const CreateMessageModal: React.FC<ModalProps> = ({ ...props }) => {
               <p className="text-sm text-gray-500">{dayjs().format('DD MMMM YYYY')}</p>
             </div>
           </div>
-          <textarea className="w-full focus:ring-0 focus:stroke-0 focus:outline-none" placeholder="test" />
+          <TextArea />
+          <img src={imageUrl} alt="gif" />
         </div>
       </div>
     </div>
+  );
+};
+
+const TextArea = () => {
+  const message = useSelector(selectPostMessage);
+  const dispatch = useDispatch();
+  const handleChangeText = (e: any) => {
+    dispatch(setMessage(e.target.value));
+  };
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.style.height = '0px';
+      const { scrollHeight } = textareaRef.current;
+      textareaRef.current.style.height = `${scrollHeight}px`;
+    }
+  }, [message]);
+  return (
+    <textarea
+      ref={textareaRef}
+      className="w-full focus:ring-0 focus:stroke-0 focus:outline-none mb-6"
+      value={message}
+      onChange={handleChangeText}
+      placeholder="Tulis pesan rahasia mu disini..."
+    />
   );
 };
 

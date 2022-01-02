@@ -1,26 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Masonry from 'react-masonry-css';
-import { useDebouncedCallback } from 'use-debounce';
+import { useDispatch } from 'react-redux';
 
+import { useKeyPressEnter } from '@/hooks/useKeyPress';
+import { setImgType, setImgUrl } from '@/redux/slices/postMessageSlice';
 import tenor from '@/services/tenor';
-import { TenorSearchResponse } from '@/typings/tenor';
+import { Result, TenorSearchResponse } from '@/typings/tenor';
 
 import TextField from '../field/TextField';
 
 const TenorSearch = () => {
   const [result, setResult] = useState<TenorSearchResponse>();
-  const handleChange = useDebouncedCallback(async (e: any) => {
+  const [query, setQuery] = useState('');
+
+  const handleSearch = useKeyPressEnter(async () => {
     const { data } = await tenor.search({
       params: {
-        q: e.target.value,
+        q: query,
       },
     });
     setResult(data);
-  }, 1000);
+  });
+
+  const handleChange = (e: any) => {
+    setQuery(e.target.value);
+  };
 
   return (
     <div className="px-3 mt-3">
-      <TextField className="mb-6" onChange={handleChange} />
+      <TextField className="mb-6" onChange={handleChange} onKeyPress={handleSearch} />
       <Masonry
         breakpointCols={2}
         className="my-masonry-grid h-56 overflow-scroll"
@@ -28,12 +36,29 @@ const TenorSearch = () => {
       >
         {result?.results.map((gif) => {
           return (
-            <div key={gif.title} className="rounded-xl">
-              <img itemType="" id="preview_gif" src={gif.media[0].gif.url} className="rounded-xl" alt="preview_gif" />
+            <div className="rounded-xl" key={gif.title}>
+              <GifImage key={gif.title} gif={gif} />
             </div>
           );
         })}
       </Masonry>
+    </div>
+  );
+};
+
+const GifImage: React.FC<{ gif: Result }> = ({ gif }) => {
+  const dispatch = useDispatch();
+
+  const onKeyPress = useKeyPressEnter(() => handleClickGif());
+
+  const handleClickGif = () => {
+    dispatch(setImgUrl(gif.media[0].gif.url));
+    dispatch(setImgType('gif'));
+  };
+
+  return (
+    <div role="button" onClick={handleClickGif} tabIndex={0} onKeyPress={onKeyPress}>
+      <img id="preview_gif" src={gif.media[0].gif.url} className="rounded-xl" alt="preview_gif" />
     </div>
   );
 };

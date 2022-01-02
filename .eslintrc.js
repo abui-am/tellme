@@ -38,6 +38,7 @@ module.exports = {
   ignorePatterns: ['*.d.ts'],
   rules: {
     camelcase: 'off',
+    'no-param-reassign': 'warn',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     'simple-import-sort/sort': 'off',
