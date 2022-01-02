@@ -4,6 +4,7 @@ import { AiOutlineGif } from 'react-icons/ai';
 import { FiX } from 'react-icons/fi';
 
 import { Button } from '../Button';
+import TenorSearch from '../tenor/TenorSearch';
 import Modal, { ModalProps } from './Modal';
 
 const CreateMessageModal: React.FC<ModalProps> = ({ ...props }) => {
@@ -22,6 +23,7 @@ const CreateMessageModal: React.FC<ModalProps> = ({ ...props }) => {
           <button className="px-6 py-4">
             <AiOutlineGif className="h-6 w-6" />
           </button>
+          <TenorSearch />
         </div>
       </section>
       <div>
