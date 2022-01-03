@@ -1,6 +1,9 @@
+import { useDispatch } from 'react-redux';
+
 import { Button } from '@/components/Button';
 import MessageCard from '@/components/card/MessageCard';
 import CreateMessageModal from '@/components/modal/CreateMessageModal';
+import { openModal } from '@/redux/slices/postMessageSlice';
 
 const MESSAGES = {
   id: Math.random().toString(),
@@ -27,6 +30,10 @@ const MESSAGES = {
   ],
 };
 export default function Home() {
+  const dispatch = useDispatch();
+  const handleClickButton = () => {
+    dispatch(openModal());
+  };
   return (
     <div>
       <div className="h-72 bg-indigo-500 w-full flex justify-center absolute top-0" style={{ zIndex: -1 }} />
@@ -46,8 +53,10 @@ export default function Home() {
           </div>
         </section>
         <section className="px-3 mb-6">
-          <Button className="mt-6">Kirim pesan rahasia</Button>
-          <CreateMessageModal isOpen />
+          <Button onClick={handleClickButton} className="mt-6">
+            Kirim pesan rahasia
+          </Button>
+          <CreateMessageModal />
         </section>
         <section className="px-3">
           <h2 className="font-bold mb-4 text-xl text-gray-800">Linimasa</h2>

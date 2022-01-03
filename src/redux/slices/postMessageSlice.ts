@@ -41,11 +41,12 @@ export const postMessageSlice = createSlice({
   },
 });
 
-export const { setMessage, setImgUrl, setImgType } = postMessageSlice.actions;
+export const { setMessage, setImgUrl, setImgType, openModal, closeModal } = postMessageSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectPostMessage = (state: RootState) => state.postMessage.message;
 export const selectImgUrl = (state: RootState) => state.postMessage.imgUrl;
 export const selectImgType = (state: RootState) => state.postMessage.imgType;
+export const selectIsOpen = (state: RootState) => state.postMessage.isOpen;
 
 export default postMessageSlice.reducer;

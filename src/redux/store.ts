@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import appSlice from './slices/appSlice';
 import postMessageSlice from './slices/postMessageSlice';
 // ...
 
 const store = configureStore({
   reducer: {
     postMessage: postMessageSlice,
+    app: appSlice,
   },
 });
 

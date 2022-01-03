@@ -4,31 +4,52 @@ import { AiOutlineGif } from 'react-icons/ai';
 import { FiX } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectImgUrl, selectPostMessage, setMessage } from '@/redux/slices/postMessageSlice';
+import { selectTab, setTab } from '@/redux/slices/appSlice';
+import { closeModal, selectImgUrl, selectIsOpen, selectPostMessage, setMessage } from '@/redux/slices/postMessageSlice';
 
 import { Button } from '../Button';
 import TenorSearch from '../tenor/TenorSearch';
-import Modal, { ModalProps } from './Modal';
 
-const CreateMessageModal: React.FC<ModalProps> = ({ ...props }) => {
+const CreateMessageModal: React.FC = () => {
   const imageUrl = useSelector(selectImgUrl);
+  const tab = useSelector(selectTab);
+  const isOpen = useSelector(selectIsOpen);
 
-  return (
+  console.log(isOpen);
+
+  const dispatch = useDispatch();
+  const handleOpenGif = () => {
+    if (tab === '') {
+      dispatch(setTab('gif'));
+    } else {
+      dispatch(setTab(''));
+    }
+  };
+
+  const handleCloseTab = () => {
+    dispatch(setTab(''));
+  };
+
+  const handleClose = () => {
+    dispatch(closeModal());
+  };
+
+  return isOpen ? (
     <div
       style={{ width: '100vw', height: typeof window !== 'undefined' ? window.innerHeight : '100w' }}
       className="fixed bottom-0 top-0 left-0 bg-white p-4"
     >
       <section id="top-head" className="flex justify-between mb-10">
-        <button type="button" onClick={props.onRequestClose}>
+        <button type="button" onClick={handleClose}>
           <FiX />
         </button>
         <Button className="w-max">Kirim Pesan</Button>
 
         <div className="fixed bottom-0 left-0 bg-white border-t w-full">
-          <button className="px-6 py-4">
+          <button className="px-6 py-4" onClick={handleOpenGif} type="button">
             <AiOutlineGif className="h-6 w-6" />
           </button>
-          <TenorSearch />
+          {tab === 'gif' && <TenorSearch />}
         </div>
       </section>
       <div>
@@ -42,15 +63,17 @@ const CreateMessageModal: React.FC<ModalProps> = ({ ...props }) => {
               <p className="text-sm text-gray-500">{dayjs().format('DD MMMM YYYY')}</p>
             </div>
           </div>
-          <TextArea />
+          <TextArea onFocus={handleCloseTab} />
           <img src={imageUrl} alt="gif" />
         </div>
       </div>
     </div>
+  ) : (
+    <div />
   );
 };
 
-const TextArea = () => {
+const TextArea: React.FC<React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, any>> = (props) => {
   const message = useSelector(selectPostMessage);
   const dispatch = useDispatch();
   const handleChangeText = (e: any) => {
@@ -68,6 +91,7 @@ const TextArea = () => {
   }, [message]);
   return (
     <textarea
+      {...props}
       ref={textareaRef}
       className="w-full focus:ring-0 focus:stroke-0 focus:outline-none mb-6"
       value={message}
