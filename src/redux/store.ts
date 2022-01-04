@@ -1,11 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { profileApi } from '@/services/profile';
+
 import appSlice from './slices/appSlice';
 import postMessageSlice from './slices/postMessageSlice';
 // ...
 
 const store = configureStore({
   reducer: {
+    [profileApi.reducerPath]: profileApi.reducer,
     postMessage: postMessageSlice,
     app: appSlice,
   },

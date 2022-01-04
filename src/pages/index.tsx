@@ -4,6 +4,7 @@ import { Button } from '@/components/Button';
 import MessageCard from '@/components/card/MessageCard';
 import CreateMessageModal from '@/components/modal/CreateMessageModal';
 import { openModal } from '@/redux/slices/postMessageSlice';
+import { useGetProfileByIdQuery } from '@/services/profile';
 
 const MESSAGES = {
   id: Math.random().toString(),
@@ -31,9 +32,12 @@ const MESSAGES = {
 };
 export default function Home() {
   const dispatch = useDispatch();
+
   const handleClickButton = () => {
     dispatch(openModal());
   };
+
+  const { data } = useGetProfileByIdQuery('ei45m4AqaNHdXS6Qy7WN');
   return (
     <div>
       <div className="h-72 bg-indigo-500 w-full flex justify-center absolute top-0" style={{ zIndex: -1 }} />
@@ -47,8 +51,8 @@ export default function Home() {
               className="w-44 h-44 rounded-full border-4 border-white bg-gray-300 object-cover absolute -translate-y-28"
             />
             <div className="mt-20 flex flex-col items-center">
-              <h1 className="mb-2 text-xl font-bold text-gray-800">Abui Abui</h1>
-              <span className="mb-8 text-gray-700">Tulis bebas pisan ss</span>
+              <h1 className="mb-2 text-xl font-bold text-gray-800">{data?.data?.fullName}</h1>
+              <span className="mb-8 text-gray-700">{data?.data?.description}</span>
             </div>
           </div>
         </section>

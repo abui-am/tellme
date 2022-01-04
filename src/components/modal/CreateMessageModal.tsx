@@ -15,8 +15,6 @@ const CreateMessageModal: React.FC = () => {
   const tab = useSelector(selectTab);
   const isOpen = useSelector(selectIsOpen);
 
-  console.log(isOpen);
-
   const dispatch = useDispatch();
   const handleOpenGif = () => {
     if (tab === '') {

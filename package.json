@@ -4,13 +4,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "npx typesync"
+    "postinstall": "npx typesync && yarn"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.7.1",
     "autoprefixer": "^10.4.1",
     "axios": "^0.24.0",
     "clsx": "^1.1.1",
+    "cors": "^2.8.5",
     "dayjs": "^1.10.7",
     "firebase": "7.17.0",
     "firebase-admin": "9.0.0",
@@ -27,6 +28,7 @@
     "use-debounce": "^7.0.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/eslint": "^7.29.0",
     "@types/eslint-plugin-prettier": "^3.1.0",
     "@types/prettier": "^2.4.2",
