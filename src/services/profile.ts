@@ -19,11 +19,15 @@ export interface Profile {
 
 export const profileApi = createApi({
   baseQuery,
-  tagTypes: ['Profile'],
+  tagTypes: ['Profile', 'ProfilePost'],
   endpoints: (build) => ({
     getProfileById: build.query<Profile, string>({
       query: (id) => `/profile/${id}`,
       providesTags: (result) => [{ type: 'Profile', id: result?.data.username }],
+    }),
+    getPostsByProfileId: build.query<any, string>({
+      query: (id) => `/profile/${id}/posts`,
+      providesTags: (result) => [{ type: 'ProfilePost', id: result?.data.username }],
     }),
   }),
 });
