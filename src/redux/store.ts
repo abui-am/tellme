@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { profileApi } from '@/services/profile';
+import { tenorApi } from '@/services/tenorApi';
 
 import appSlice from './slices/appSlice';
 import postMessageSlice from './slices/postMessageSlice';
@@ -8,10 +9,12 @@ import postMessageSlice from './slices/postMessageSlice';
 
 const store = configureStore({
   reducer: {
+    [tenorApi.reducerPath]: tenorApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
     postMessage: postMessageSlice,
     app: appSlice,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(tenorApi.middleware, profileApi.middleware),
 });
 
 export default store;

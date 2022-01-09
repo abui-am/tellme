@@ -5,7 +5,9 @@ const TextField: React.FC<React.DetailedHTMLProps<React.InputHTMLAttributes<HTML
   className,
   ...props
 }) => {
-  return <input {...props} className={clsx('rounded-full border w-full px-2 h-10', className)} />;
+  return (
+    <input {...props} className={clsx('rounded-full focus:outline-indigo-500 border w-full px-2 h-10', className)} />
+  );
 };
 
 export default TextField;

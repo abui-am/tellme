@@ -23,6 +23,7 @@ export interface Profile {
 export const profileApi = createApi({
   baseQuery,
   tagTypes: ['Profile', 'ProfilePost'],
+  reducerPath: 'profileApi',
   endpoints: (build) => ({
     getProfileById: build.query<Profile, string>({
       query: (id) => `/profile/${id}`,

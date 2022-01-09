@@ -6,6 +6,8 @@ import { useKeyPressEnter } from '@/hooks/useKeyPress';
 import { useGetPostsByProfileIdQuery, usePostCommentMutation } from '@/services/profile';
 import { Comment, Data } from '@/typings/posts';
 
+import TextField from '../field/TextField';
+
 type Message = Data | Record<string, any>;
 
 const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ withNoBorder, message }) => {
@@ -17,7 +19,9 @@ const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ wi
             <img src="SVG/anonim.svg" alt="anonim" className="bg-gray-400 h-12 w-12 rounded-full border-white" />
           </div>
           <div className="pb-2 flex-1">
-            <label className="font-bold text-lg text-gray-800">Anonymous</label>
+            <label className="font-bold text-lg text-gray-800">
+              {message.sender.name ? message.sender.name : 'Anonim'}
+            </label>
             <p className="text-sm text-gray-500">{parseTimeStamp(message?.createdAt).format('DD MMMM YYYY')}</p>
           </div>
         </div>
@@ -87,7 +91,7 @@ const CommentInput = ({ withDecorator = false, postId = '' }) => {
         />
       </div>
       <div className="pt-6 pb-2 w-full flex-1">
-        <input
+        <TextField
           className="rounded-full border w-full px-2"
           style={{ minHeight: 40 }}
           placeholder="Tulis komentar sebagai anonim..."

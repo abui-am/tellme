@@ -13,15 +13,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     try {
       const { id } = <{ id: string }>req.query;
-      const {
-        comment,
-        sender = {
-          profileId: '',
-          name: 'Anonymous',
-          type: 'Anonymous',
-        },
-      } = req.body as Comment;
-
+      const { comment } = req.body as Comment;
+      const sender = {
+        profileId: '',
+        name: 'Anonim',
+        type: 'Anonymous',
+      };
       await db
         .collection('post')
         .doc(id)

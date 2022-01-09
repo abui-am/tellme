@@ -41,9 +41,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
         message: message ?? '',
         sender: {
-          name: sender?.name ?? '',
+          name: sender?.name ?? 'Anonim',
           profileId: sender?.profileId ?? '',
-          type: sender?.type ?? 'anonymous',
+          type: sender?.type ?? 'Anonymous',
         },
         comments: [],
         createdAt: firestore.Timestamp.now(),

@@ -117,3 +117,17 @@ export interface TenorSearchResponse {
   results: Result[];
   next: string;
 }
+
+// Tenor Category
+
+export interface Tag {
+  searchterm: string;
+  path: string;
+  image: string;
+  name: string;
+}
+
+export interface TenorCategoryResponse {
+  locale: string;
+  tags: Tag[];
+}

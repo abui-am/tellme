@@ -4,22 +4,19 @@ import { useDispatch } from 'react-redux';
 
 import { useKeyPressEnter } from '@/hooks/useKeyPress';
 import { setImgType, setImgUrl } from '@/redux/slices/postMessageSlice';
-import tenor from '@/services/tenor';
-import { Result, TenorSearchResponse } from '@/typings/tenor';
+import { useCategoriesQuery, useSearchMutation } from '@/services/tenorApi';
+import { Result, Tag } from '@/typings/tenor';
 
 import TextField from '../field/TextField';
 
 const TenorSearch = () => {
-  const [result, setResult] = useState<TenorSearchResponse>();
   const [query, setQuery] = useState('');
 
+  const [search, { data }] = useSearchMutation();
+  const { data: dataCat } = useCategoriesQuery('');
+
   const handleSearch = useKeyPressEnter(async () => {
-    const { data } = await tenor.search({
-      params: {
-        q: query,
-      },
-    });
-    setResult(data);
+    search({ q: query });
   });
 
   const handleChange = (e: any) => {
@@ -28,16 +25,36 @@ const TenorSearch = () => {
 
   return (
     <div className="px-3 mt-3">
-      <TextField className="mb-6" onChange={handleChange} onKeyPress={handleSearch} />
+      <TextField
+        className="mb-6"
+        value={query}
+        placeholder="Masukan kata kunci..."
+        onChange={handleChange}
+        onKeyPress={handleSearch}
+      />
       <Masonry
         breakpointCols={2}
         className="my-masonry-grid h-56 overflow-scroll"
         columnClassName="my-masonry-grid_column"
       >
-        {result?.results.map((gif) => {
+        {data?.results.length === 0 ||
+          !!data ||
+          dataCat?.tags.map((tag) => {
+            return (
+              <CategoryItem
+                key={tag.name}
+                tag={tag}
+                onClick={(tag) => {
+                  setQuery(tag);
+                  search({ q: tag });
+                }}
+              />
+            );
+          })}
+        {data?.results.map((gif) => {
           return (
-            <div className="rounded-xl" key={gif.title}>
-              <GifImage key={gif.title} gif={gif} />
+            <div className="rounded-xl" key={gif.id}>
+              <GifImage gif={gif} />
             </div>
           );
         })}
@@ -59,6 +76,30 @@ const GifImage: React.FC<{ gif: Result }> = ({ gif }) => {
   return (
     <div role="button" onClick={handleClickGif} tabIndex={0} onKeyPress={onKeyPress}>
       <img id="preview_gif" src={gif.media[0].gif.url} className="rounded-xl" alt="preview_gif" />
+    </div>
+  );
+};
+
+const CategoryItem: React.FC<{ onClick: (searchTerm: string) => void; tag: Tag }> = ({ onClick, tag }) => {
+  const handleKeyPress = useKeyPressEnter(() => {
+    onClick(tag.searchterm);
+  });
+  const handleClickCategory = () => {
+    onClick(tag.searchterm);
+  };
+  return (
+    <div
+      role="button"
+      className="relative rounded-xl overflow-hidden"
+      onKeyPress={handleKeyPress}
+      key={tag.name}
+      tabIndex={0}
+      onClick={handleClickCategory}
+    >
+      <div className="backdrop-brightness-50 absolute w-full bottom-0 top-0 lef-0 right-0 flex justify-center items-center">
+        <span className="font-bold text-white">{tag.searchterm}</span>
+      </div>
+      <img id="preview_gif" src={tag.image} alt="preview_gif" />
     </div>
   );
 };

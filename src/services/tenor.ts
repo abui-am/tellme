@@ -8,10 +8,15 @@ const api = axios.create({
   baseURL: BASE_URL,
   params: {
     key: process.env.NEXT_PUBLIC_TENOR_API_KEY,
+    limit: 10,
   },
 });
+
 export default {
   search: (config: AxiosRequestConfig<any>): AxiosPromise<TenorSearchResponse> => {
     return api.get('/search', config);
+  },
+  categories: (config: AxiosRequestConfig<any>): AxiosPromise<TenorSearchResponse> => {
+    return api.get('/categories', config);
   },
 };
