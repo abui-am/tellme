@@ -4,7 +4,7 @@ import { Button } from '@/components/Button';
 import MessageCard from '@/components/card/MessageCard';
 import CreateMessageModal from '@/components/modal/CreateMessageModal';
 import { openModal } from '@/redux/slices/postMessageSlice';
-import { useGetProfileByIdQuery } from '@/services/profile';
+import { useGetPostsByProfileIdQuery, useGetProfileByIdQuery } from '@/services/profile';
 
 const MESSAGES = {
   id: Math.random().toString(),
@@ -38,6 +38,7 @@ export default function Home() {
   };
 
   const { data } = useGetProfileByIdQuery('ei45m4AqaNHdXS6Qy7WN');
+  const { data: posts } = useGetPostsByProfileIdQuery('ei45m4AqaNHdXS6Qy7WN');
   return (
     <div>
       <div className="h-72 bg-indigo-500 w-full flex justify-center absolute top-0" style={{ zIndex: -1 }} />
@@ -62,12 +63,11 @@ export default function Home() {
           </Button>
           <CreateMessageModal />
         </section>
-        <section className="px-3">
+        <section className="px-3 border-b">
           <h2 className="font-bold mb-4 text-xl text-gray-800">Linimasa</h2>
         </section>
-        <section>
-          <MessageCard message={MESSAGES} />
-          <MessageCard message={MESSAGES} />
+        <section className="max-w-xl ml-auto mr-auto">
+          <MessageCard withNoBorder message={posts?.data[0] ?? {}} />
         </section>
       </section>
 

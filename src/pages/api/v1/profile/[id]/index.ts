@@ -14,7 +14,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       const dataSnapshot = snapshot.data();
 
-      res.status(200).json(createResult({ ...dataSnapshot }));
+      res.status(200).json(createResult({ ...dataSnapshot }, req.query));
       res.end();
     } catch (e) {
       res.end();

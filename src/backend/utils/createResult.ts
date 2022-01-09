@@ -9,11 +9,12 @@ const MESSAGE = {
   success: 'Data mendapatkan data',
 };
 
-const createResult = (res: any, option?: ResultOption) => {
+const createResult = (res: any, query: any, option?: ResultOption) => {
   return {
     data: res,
     message: option?.message ?? MESSAGE.success,
     status: option?.status ?? 200,
+    query,
   };
 };
 

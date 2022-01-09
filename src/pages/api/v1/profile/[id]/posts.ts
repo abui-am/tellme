@@ -17,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         result.push(doc.data());
       });
 
-      res.status(200).json(createResult({ ...result }));
+      res.status(200).json(createResult([...result], req.query));
       res.end();
     } catch (e) {
       res.end();
