@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@/backend/firebase/admin';
 import createResult from '@/backend/utils/createResult';
 import { cors } from '@/backend/utils/middlewares';
-import { Data } from '@/typings/posts';
+import { CreatePostPayload, Data } from '@/typings/posts';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   await cors(req, res);
@@ -29,16 +29,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     try {
       const { id } = <{ id: string }>req.query;
-      const { image, message, sender } = req.body as Data;
+      const { image, message, sender } = req.body as CreatePostPayload;
       const storedData: Data = {
         image: {
           type: image?.type ?? '',
-          url: image?.type ?? '',
+          url: image?.url ?? '',
         },
         message: message ?? '',
         sender: {
-          name: sender.name ?? '',
-          profileId: sender.profileId ?? '',
+          name: sender?.name ?? '',
+          profileId: sender?.profileId ?? '',
           type: sender?.type ?? 'anonymous',
         },
         comments: [],

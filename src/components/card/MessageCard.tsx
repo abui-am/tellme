@@ -48,7 +48,8 @@ const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ wi
 
       <div className="flex px-4 -mt-2 pb-3">
         <div className="flex flex-col justify-center items-center mr-3">
-          <div className="bg-gray-200 h-5" style={{ width: 2 }} />
+          <div className="bg-gray-200 h-5" style={{ width: message.comments.length > 0 ? 2 : 0 }} />
+
           <img
             src="SVG/anonim.svg"
             alt="comment-anonim"

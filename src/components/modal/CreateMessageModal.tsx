@@ -1,11 +1,22 @@
 import dayjs from 'dayjs';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 import { AiOutlineGif } from 'react-icons/ai';
 import { FiX } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectTab, setTab } from '@/redux/slices/appSlice';
-import { closeModal, selectImgUrl, selectIsOpen, selectPostMessage, setMessage } from '@/redux/slices/postMessageSlice';
+import {
+  closeModal,
+  reset,
+  selectImgType,
+  selectImgUrl,
+  selectIsOpen,
+  selectPostMessage,
+  setMessage,
+} from '@/redux/slices/postMessageSlice';
+import { useSendMessageMutation } from '@/services/profile';
+import { CreatePostPayload } from '@/typings/posts';
 
 import { Button } from '../Button';
 import TenorSearch from '../tenor/TenorSearch';
@@ -41,7 +52,7 @@ const CreateMessageModal: React.FC = () => {
         <button type="button" onClick={handleClose}>
           <FiX />
         </button>
-        <Button className="w-max">Kirim Pesan</Button>
+        <ButtonSendMessage />
 
         <div className="fixed bottom-0 left-0 bg-white border-t w-full">
           <button className="px-6 py-4" onClick={handleOpenGif} type="button">
@@ -62,7 +73,7 @@ const CreateMessageModal: React.FC = () => {
             </div>
           </div>
           <TextArea onFocus={handleCloseTab} />
-          <img src={imageUrl} alt="gif" />
+          {imageUrl && <img src={imageUrl} alt="gif" />}
         </div>
       </div>
     </div>
@@ -96,6 +107,36 @@ const TextArea: React.FC<React.DetailedHTMLProps<React.TextareaHTMLAttributes<HT
       onChange={handleChangeText}
       placeholder="Tulis pesan rahasia mu disini..."
     />
+  );
+};
+
+const ButtonSendMessage: React.FC = () => {
+  const [create] = useSendMessageMutation();
+  const imageUrl = useSelector(selectImgUrl);
+  const imageType = useSelector(selectImgType);
+  const message = useSelector(selectPostMessage);
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const handleSend = async () => {
+    const payload: CreatePostPayload = {
+      image: {
+        type: imageType,
+        url: imageUrl,
+      },
+      message,
+      profileId: 'ei45m4AqaNHdXS6Qy7WN',
+    };
+
+    await create(payload);
+    router.push('/');
+    dispatch(reset());
+  };
+
+  return (
+    <Button className="w-max" onClick={handleSend}>
+      Kirim Pesan
+    </Button>
   );
 };
 

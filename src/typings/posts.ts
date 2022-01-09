@@ -34,3 +34,5 @@ export interface Posts {
   status: number;
   query: any;
 }
+
+export type CreatePostPayload = Partial<Pick<Data, 'image' | 'sender' | 'message' | 'profileId'>>;

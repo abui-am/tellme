@@ -2,6 +2,7 @@ import '../styles/global.css';
 
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
 
 import store from '@/redux/store';
@@ -17,6 +18,8 @@ function MyApp({ Component, pageProps }: MyAppProps): JSX.Element {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
       </Head>
       <Provider store={store}>
+        <Toaster position="bottom-right" toastOptions={{ success: { duration: 2000 } }} />
+
         <Component {...pageProps} />
       </Provider>
     </div>
