@@ -1,5 +1,6 @@
 import { firestore } from 'firebase-admin';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { v4 } from 'uuid';
 
 import { db } from '@/backend/firebase/admin';
 import createResult from '@/backend/utils/createResult';
@@ -12,7 +13,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     try {
       const { id } = <{ id: string }>req.query;
-      const snapshot = await db.collection('post').where('profileId', '==', id).get();
+      const snapshot = await db.collection('post').orderBy('createdAt', 'desc').where('profileId', '==', id).get();
       const result: any[] = [];
 
       snapshot.forEach((doc) => {
@@ -22,6 +23,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(200).json(createResult([...result], req.query));
       res.end();
     } catch (e) {
+      console.error(e);
       res.end();
     }
   }
@@ -29,8 +31,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     try {
       const { id } = <{ id: string }>req.query;
+      const uuid = v4();
       const { image, message, sender } = req.body as CreatePostPayload;
       const storedData: Data = {
+        id: uuid,
         image: {
           type: image?.type ?? '',
           url: image?.url ?? '',
@@ -48,7 +52,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       };
       const ref = await db.collection('post');
 
-      ref.add(storedData);
+      ref.doc(uuid).create(storedData);
 
       res.status(200).json(
         createResult(

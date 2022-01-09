@@ -19,6 +19,7 @@ export interface Image {
 }
 
 export interface Data {
+  id: string;
   comments: Comment[];
   createdAt: CreatedAt;
   message: string;

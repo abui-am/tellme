@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { Button } from '@/components/Button';
 import MessageCard from '@/components/card/MessageCard';
 import CreateMessageModal from '@/components/modal/CreateMessageModal';
-import { parseTimeStamp } from '@/helpers/date';
 import { openModal } from '@/redux/slices/postMessageSlice';
 import { useGetPostsByProfileIdQuery, useGetProfileByIdQuery } from '@/services/profile';
 
@@ -44,8 +43,8 @@ export default function Home() {
           <h2 className="font-bold mb-4 text-xl text-gray-800">Linimasa</h2>
         </section>
         <section className="max-w-xl ml-auto mr-auto">
-          {posts?.data.map((data) => {
-            return <MessageCard withNoBorder message={data} key={parseTimeStamp(data.createdAt).toISOString()} />;
+          {posts?.data.map((data, index) => {
+            return <MessageCard withNoBorder={index === 0} message={data} key={data.id} />;
           })}
         </section>
       </section>

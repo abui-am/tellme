@@ -30,7 +30,7 @@ export const profileApi = createApi({
     }),
     getPostsByProfileId: build.query<Posts, string>({
       query: (id) => `/profile/${id}/posts`,
-      providesTags: (result) => [{ type: 'ProfilePost', id: result?.query.id }],
+      providesTags: ['ProfilePost'],
     }),
     sendMessage: build.mutation<Posts, CreatePostPayload>({
       invalidatesTags: ['ProfilePost'],

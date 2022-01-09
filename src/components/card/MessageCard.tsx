@@ -19,9 +19,14 @@ const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ wi
             <p className="text-sm text-gray-500">{parseTimeStamp(message?.createdAt).format('DD MMMM YYYY')}</p>
           </div>
         </div>
-        <div>
+        <div className="mb-4">
           <p className="text-lg text-gray-800">{message?.message}</p>
         </div>
+        {message.image?.url && (
+          <div>
+            <img src={message.image?.url} className="w-full rounded-lg" alt={`gif-${message.image?.url}`} />
+          </div>
+        )}
       </div>
       <section>
         {message?.comments?.map((msg: Comment, index: number) => {
