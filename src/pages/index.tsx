@@ -6,30 +6,6 @@ import CreateMessageModal from '@/components/modal/CreateMessageModal';
 import { openModal } from '@/redux/slices/postMessageSlice';
 import { useGetPostsByProfileIdQuery, useGetProfileByIdQuery } from '@/services/profile';
 
-const MESSAGES = {
-  id: Math.random().toString(),
-  name: 'Anonim',
-  message: 'test',
-  dateCreated: new Date(),
-  comments: [
-    {
-      id: Math.random().toString(),
-      name: 'Anonim',
-      message: 'test',
-    },
-
-    {
-      id: Math.random().toString(),
-      name: 'Anonim',
-      message: 'tes 2',
-    },
-    {
-      id: Math.random().toString(),
-      name: 'Anonim',
-      message: 'test3',
-    },
-  ],
-};
 export default function Home() {
   const dispatch = useDispatch();
 

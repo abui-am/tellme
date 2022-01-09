@@ -1,7 +1,5 @@
-export interface CreatedAt {
-  _seconds: number;
-  _nanoseconds: number;
-}
+import { firestore } from 'firebase';
+export type CreatedAt = firestore.Timestamp;
 
 export interface Comment {
   sender: Sender;

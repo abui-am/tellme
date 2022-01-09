@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import React from 'react';
 
 import { parseTimeStamp } from '@/helpers/date';
-import { Data } from '@/typings/posts';
+import { Comment, Data } from '@/typings/posts';
 
-type Message = Data;
+type Message = Data | Record<string, any>;
 
 const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ withNoBorder, message }) => {
   return (
@@ -20,19 +20,19 @@ const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ wi
           </div>
         </div>
         <div>
-          <p className="text-lg text-gray-800">{message.message}</p>
+          <p className="text-lg text-gray-800">{message?.message}</p>
         </div>
       </div>
       <section>
-        {message.comments?.map((msg, index) => {
+        {message?.comments?.map((msg: Comment, index: number) => {
           return (
             // eslint-disable-next-line no-underscore-dangle
-            <div className="flex px-4" key={msg.createdAt._seconds}>
+            <div className="flex px-4" key={parseTimeStamp(msg.createdAt).toDate().toISOString()}>
               <div className="flex flex-col justify-center items-center mr-5 w-12">
                 <div className="bg-gray-200 h-4" style={{ width: index === 0 ? 0 : 2 }} />
                 <img
                   src="SVG/anonim.svg"
-                  alt={`anonim${msg.createdAt}`}
+                  alt={`anonim${parseTimeStamp(msg.createdAt).toDate().toISOString()}`}
                   className="bg-gray-400 h-12 w-12 rounded-full border-4 border-white"
                 />
                 <div className="bg-gray-200 flex-1" style={{ width: 2 }} />
