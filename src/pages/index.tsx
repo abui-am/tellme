@@ -49,9 +49,7 @@ export default function Home() {
         </section>
       </section>
 
-      <footer className="px-3 mt-6 flex justify-center items-center bg-gray-100 text-gray-400 h-12">
-        Made with love by Abui
-      </footer>
+      <footer className="px-3 mt-6 flex justify-center items-center bg-gray-100 text-gray-400 h-12">v.0.0.0.01</footer>
     </div>
   );
 }

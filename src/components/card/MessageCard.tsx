@@ -1,7 +1,9 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { parseTimeStamp } from '@/helpers/date';
+import { useKeyPressEnter } from '@/hooks/useKeyPress';
+import { useGetPostsByProfileIdQuery, usePostCommentMutation } from '@/services/profile';
 import { Comment, Data } from '@/typings/posts';
 
 type Message = Data | Record<string, any>;
@@ -32,12 +34,12 @@ const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ wi
         {message?.comments?.map((msg: Comment, index: number) => {
           return (
             // eslint-disable-next-line no-underscore-dangle
-            <div className="flex px-4" key={parseTimeStamp(msg.createdAt).toDate().toISOString()}>
+            <div className="flex px-4" key={msg.id}>
               <div className="flex flex-col justify-center items-center mr-5 w-12">
                 <div className="bg-gray-200 h-4" style={{ width: index === 0 ? 0 : 2 }} />
                 <img
                   src="SVG/anonim.svg"
-                  alt={`anonim${parseTimeStamp(msg.createdAt).toDate().toISOString()}`}
+                  alt={`anonim${msg.id}`}
                   className="bg-gray-400 h-12 w-12 rounded-full border-4 border-white"
                 />
                 <div className="bg-gray-200 flex-1" style={{ width: 2 }} />
@@ -50,24 +52,48 @@ const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ wi
           );
         })}
       </section>
+      <CommentInput withDecorator={message.comments.length > 0} postId={message.id} />
+    </div>
+  );
+};
 
-      <div className="flex px-4 -mt-2 pb-3">
-        <div className="flex flex-col justify-center items-center mr-3">
-          <div className="bg-gray-200 h-5" style={{ width: message.comments.length > 0 ? 2 : 0 }} />
+const CommentInput = ({ withDecorator = false, postId = '' }) => {
+  const [create] = usePostCommentMutation();
+  const [comment, setComment] = useState('');
+  const { refetch } = useGetPostsByProfileIdQuery('ei45m4AqaNHdXS6Qy7WN');
 
-          <img
-            src="SVG/anonim.svg"
-            alt="comment-anonim"
-            className="bg-gray-400 h-12 w-12 rounded-full border-4 border-white"
-          />
-        </div>
-        <div className="pt-6 pb-2 w-full flex-1">
-          <input
-            className="rounded-full border w-full px-2"
-            style={{ minHeight: 40 }}
-            placeholder="Tulis komentar sebagai anonim..."
-          />
-        </div>
+  const handleKey = useKeyPressEnter(async () => {
+    await create({
+      comment,
+      postId,
+    });
+    refetch();
+    setComment('');
+  });
+
+  const handleChange = (e: any) => {
+    setComment(e.target.value);
+  };
+
+  return (
+    <div className="flex px-4 -mt-2 pb-3">
+      <div className="flex flex-col justify-center items-center mr-3">
+        <div className="bg-gray-200 h-5" style={{ width: withDecorator ? 2 : 0 }} />
+
+        <img
+          src="SVG/anonim.svg"
+          alt="comment-anonim"
+          className="bg-gray-400 h-12 w-12 rounded-full border-4 border-white"
+        />
+      </div>
+      <div className="pt-6 pb-2 w-full flex-1">
+        <input
+          className="rounded-full border w-full px-2"
+          style={{ minHeight: 40 }}
+          placeholder="Tulis komentar sebagai anonim..."
+          onChange={handleChange}
+          onKeyPress={handleKey}
+        />
       </div>
     </div>
   );

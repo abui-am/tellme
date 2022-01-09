@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-hot-toast';
 
-import { CreatePostPayload, Posts } from '@/typings/posts';
+import { CommentPayload, CreatePostPayload, Posts } from '@/typings/posts';
 
 // Create our baseQuery instance
 const baseQuery = fetchBaseQuery({
@@ -46,7 +46,24 @@ export const profileApi = createApi({
         return res;
       },
     }),
+    postComment: build.mutation<Posts, CommentPayload>({
+      invalidatesTags: ['ProfilePost'],
+      query: ({ comment, postId }) => {
+        return {
+          url: `posts/${postId}/comment`,
+          method: 'POST',
+          body: {
+            comment,
+          },
+        };
+      },
+      transformResponse: (res: Posts) => {
+        toast.success(res.message);
+        return res;
+      },
+    }),
   }),
 });
 
-export const { useGetProfileByIdQuery, useGetPostsByProfileIdQuery, useSendMessageMutation } = profileApi;
+export const { useGetProfileByIdQuery, useGetPostsByProfileIdQuery, usePostCommentMutation, useSendMessageMutation } =
+  profileApi;

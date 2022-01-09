@@ -2,6 +2,7 @@ import { firestore } from 'firebase';
 export type CreatedAt = firestore.Timestamp;
 
 export interface Comment {
+  id: string;
   sender: Sender;
   createdAt: CreatedAt;
   comment: string;
@@ -37,3 +38,7 @@ export interface Posts {
 }
 
 export type CreatePostPayload = Partial<Pick<Data, 'image' | 'sender' | 'message' | 'profileId'>>;
+export type CommentPayload = {
+  comment: string;
+  postId: string;
+};
