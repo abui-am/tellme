@@ -12,8 +12,8 @@ type Message = Data | Record<string, any>;
 
 const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ withNoBorder, message }) => {
   return (
-    <div className={clsx('w-full', withNoBorder ? 'border-t-0' : 'border-t')}>
-      <div className="px-4">
+    <div className={clsx('w-full bg-white mb-4', withNoBorder ? 'border-t-0' : 'border-t')}>
+      <div className="px-4 mb-2">
         <div className="flex pt-4 pb-2">
           <div className="flex flex-col justify-center items-center mr-5 w-12">
             <img src="SVG/anonim.svg" alt="anonim" className="bg-gray-400 h-12 w-12 rounded-full border-white" />
@@ -49,8 +49,10 @@ const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ wi
                 <div className="bg-gray-200 flex-1" style={{ width: 2 }} />
               </div>
               <div className="pt-4 pb-2 flex-1">
-                <label className="font-bold text-gray-800">{msg.sender.name}</label>
-                <p className="text-gray-800">{msg.comment}</p>
+                <p className="text-gray-800 mt-2">
+                  <span className="font-bold text-gray-800 mr-2">{msg.sender.name}</span>
+                  {msg.comment}
+                </p>
               </div>
             </div>
           );
@@ -66,14 +68,16 @@ const CommentInput = ({ withDecorator = false, postId = '' }) => {
   const [comment, setComment] = useState('');
   const { refetch } = useGetPostsByProfileIdQuery('ei45m4AqaNHdXS6Qy7WN');
 
-  const handleKey = useKeyPressEnter(async () => {
+  const sendMessage = async () => {
     await create({
       comment,
       postId,
     });
-    refetch();
     setComment('');
-  });
+    refetch();
+  };
+
+  const handleKey = useKeyPressEnter(() => sendMessage());
 
   const handleChange = (e: any) => {
     setComment(e.target.value);
@@ -92,7 +96,9 @@ const CommentInput = ({ withDecorator = false, postId = '' }) => {
       </div>
       <div className="pt-6 pb-2 w-full flex-1">
         <TextField
+          onClickButton={sendMessage}
           className="rounded-full border w-full px-2"
+          value={comment}
           style={{ minHeight: 40 }}
           placeholder="Tulis komentar sebagai anonim..."
           onChange={handleChange}
