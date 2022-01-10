@@ -46,7 +46,7 @@ const CreateMessageModal: React.FC = () => {
   return isOpen ? (
     <div
       style={{ width: '100vw', height: typeof window !== 'undefined' ? window.innerHeight : '100w' }}
-      className="fixed bottom-0 top-0 left-0 bg-white p-4"
+      className="fixed bottom-0 top-0 left-0 bg-white p-4 z-10"
     >
       <section id="top-head" className="flex justify-between mb-10">
         <button type="button" onClick={handleClose}>
