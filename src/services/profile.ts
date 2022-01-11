@@ -20,6 +20,7 @@ export interface Profile {
   status: number;
 }
 
+// profile
 export const profileApi = createApi({
   baseQuery,
   tagTypes: ['Profile', 'ProfilePost'],
