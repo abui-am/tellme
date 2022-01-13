@@ -12,15 +12,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === 'GET') {
     try {
-      const { id } = <{ id: string }>req.query;
-      const snapshot = await db.collection('post').orderBy('createdAt', 'desc').where('profileId', '==', id).get();
+      const { id, limit = '5', page = '1' } = <{ id: string; limit: string; page: string }>req.query;
+      const snapshot = await db
+        .collection('post')
+        .orderBy('createdAt', 'desc')
+        .where('profileId', '==', id)
+        .offset((+page - 1) * +limit)
+        .limit(+limit)
+        .get();
       const result: any[] = [];
 
       snapshot.forEach((doc) => {
         result.push(doc.data());
       });
 
-      res.status(200).json(createResult([...result], req.query));
+      res.status(200).json(createResult([...result], { query: { id, limit, page } }));
       res.end();
     } catch (e) {
       console.error(e);

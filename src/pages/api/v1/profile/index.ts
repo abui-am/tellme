@@ -8,16 +8,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   await cors(req, res);
 
   if (req.method === 'GET') {
-    let id = '';
-
     try {
-      const snapshot = await db.collection('profile').get();
-
-      snapshot.forEach((doc) => {
-        id = doc.id;
-      });
-
-      const doc = await db.collection('profile').doc(id).get();
+      const { id } = req.query;
+      const doc = await db
+        .collection('profile')
+        .doc(id as string)
+        .get();
 
       res.status(200).json(createResult(doc.data()));
       res.end();
