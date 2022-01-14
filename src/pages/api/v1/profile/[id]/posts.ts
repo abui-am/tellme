@@ -10,6 +10,7 @@ import { CreatePostPayload, Data } from '@/typings/posts';
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   await cors(req, res);
 
+  // GET
   if (req.method === 'GET') {
     try {
       const { id, limit = '5', page = '1' } = <{ id: string; limit: string; page: string }>req.query;
