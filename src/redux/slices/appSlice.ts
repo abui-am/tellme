@@ -4,7 +4,7 @@ import type { RootState } from '@/redux/store';
 
 // Define a type for the slice state
 interface AppState {
-  tab: '' | 'gif';
+  tab: '' | 'gif' | 'emoji';
 }
 
 // Define the initial state using that type
@@ -17,13 +17,17 @@ export const appSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setTab: (state, action: PayloadAction<'' | 'gif'>) => {
+    setTab: (state, action: PayloadAction<'' | 'gif' | 'emoji'>) => {
       state.tab = action.payload;
+    },
+    closeTabWithException: (state) => {
+      const exception = ['emoji'];
+      if (!exception.includes(state.tab)) state.tab = '';
     },
   },
 });
 
-export const { setTab } = appSlice.actions;
+export const { setTab, closeTabWithException } = appSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectTab = (state: RootState) => state.app.tab;

@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 
 const TextField: React.FC<
-  React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, any> & { onClickButton: () => void }
-> = ({ className, onClickButton, ...props }) => {
+  React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, any> & { onClickButton?: () => void }
+> = ({ className, onClickButton = () => {}, ...props }) => {
   const [isFocused, setIsFocused] = useState(false);
   const handleFocus = () => {
     setIsFocused(true);

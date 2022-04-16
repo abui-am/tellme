@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
+import { IEmojiPickerProps } from 'emoji-picker-react';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineGif } from 'react-icons/ai';
-import { FiX } from 'react-icons/fi';
+import { FiSmile, FiX } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectTab, setTab } from '@/redux/slices/appSlice';
+import EmojiPicker from '@/components/emoji/EmojiSearch';
+import { closeTabWithException, selectTab, setTab } from '@/redux/slices/appSlice';
 import {
   closeModal,
   reset,
@@ -23,25 +25,22 @@ import TenorSearch from '../tenor/TenorSearch';
 
 const CreateMessageModal: React.FC = () => {
   const imageUrl = useSelector(selectImgUrl);
-  const tab = useSelector(selectTab);
-  const isOpen = useSelector(selectIsOpen);
+  const [cursorPos, setCursorPos] = useState<number | null>(null);
 
+  const isOpen = useSelector(selectIsOpen);
+  const message = useSelector(selectPostMessage);
   const dispatch = useDispatch();
-  const handleOpenGif = () => {
-    if (tab === '') {
-      dispatch(setTab('gif'));
-    } else {
-      dispatch(setTab(''));
-    }
-  };
 
   const handleCloseTab = () => {
-    dispatch(setTab(''));
+    setCursorPos(null);
+    dispatch(closeTabWithException());
   };
 
   const handleClose = () => {
     dispatch(closeModal());
   };
+
+  const textAreaRef = useRef<any>();
 
   return isOpen ? (
     <div
@@ -53,13 +52,23 @@ const CreateMessageModal: React.FC = () => {
           <FiX />
         </button>
         <ButtonSendMessage />
+        <EmojiAndGifPicker
+          onEmojiClick={(e, emojiObject) => {
+            if (cursorPos === null) {
+              const currCursorPos: number = textAreaRef.current.selectionStart;
+              const text1 = message.slice(0, currCursorPos);
+              const text2 = message.slice(currCursorPos);
 
-        <div className="fixed bottom-0 left-0 bg-white border-t w-full">
-          <button className="px-6 py-4" onClick={handleOpenGif} type="button">
-            <AiOutlineGif className="h-6 w-6" />
-          </button>
-          {tab === 'gif' && <TenorSearch />}
-        </div>
+              dispatch(setMessage(`${text1}${emojiObject.emoji}${text2}`));
+              setCursorPos(currCursorPos + emojiObject.emoji.length);
+            } else {
+              const text1 = message.slice(0, cursorPos);
+              const text2 = message.slice(cursorPos);
+              dispatch(setMessage(`${text1}${emojiObject.emoji}${text2}`));
+              setCursorPos((cursorPos) => (cursorPos ?? 0) + emojiObject.emoji.length);
+            }
+          }}
+        />
       </section>
       <div>
         <div>
@@ -72,7 +81,7 @@ const CreateMessageModal: React.FC = () => {
               <p className="text-sm text-gray-500">{dayjs().format('DD MMMM YYYY')}</p>
             </div>
           </div>
-          <TextArea onFocus={handleCloseTab} />
+          <TextArea onFocus={handleCloseTab} ref={textAreaRef} />
           {imageUrl && <img src={imageUrl} alt="gif" />}
         </div>
       </div>
@@ -82,33 +91,85 @@ const CreateMessageModal: React.FC = () => {
   );
 };
 
-const TextArea: React.FC<React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, any>> = (props) => {
+const EmojiAndGifPicker: React.FC<{ onEmojiClick: IEmojiPickerProps['onEmojiClick'] }> = ({ onEmojiClick }) => {
+  const dispatch = useDispatch();
+  const tab = useSelector(selectTab);
+  const handleOpenGif = () => {
+    if (tab === '') {
+      dispatch(setTab('gif'));
+    } else {
+      dispatch(setTab(''));
+    }
+  };
+  const handleOpenEmojiPicker = () => {
+    if (tab === '') {
+      dispatch(setTab('emoji'));
+    } else {
+      dispatch(setTab(''));
+    }
+  };
+
+  return (
+    <div className="fixed bottom-0 left-0 bg-white border-t w-full">
+      <section id="" className="flex">
+        <button
+          className="px-6 py-4"
+          onClick={handleOpenGif}
+          onMouseDown={(e) => {
+            e.preventDefault();
+          }}
+          type="button"
+        >
+          <AiOutlineGif className="h-6 w-6" />
+        </button>
+        <button
+          className="px-6 py-4"
+          onMouseDown={(e) => {
+            e.preventDefault();
+          }}
+          onClick={handleOpenEmojiPicker}
+          type="button"
+        >
+          <FiSmile className="h-6 w-6" />
+        </button>
+      </section>
+      {tab === 'gif' && <TenorSearch />}
+      {tab === 'emoji' && <EmojiPicker disableSearchBar onEmojiClick={onEmojiClick} />}
+    </div>
+  );
+};
+
+const TextArea = React.forwardRef<
+  HTMLTextAreaElement,
+  React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, any>
+>((props, ref) => {
   const message = useSelector(selectPostMessage);
   const dispatch = useDispatch();
   const handleChangeText = (e: any) => {
     dispatch(setMessage(e.target.value));
   };
 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const textareaRef = ref ?? useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
-    if (textareaRef && textareaRef.current) {
+    if (textareaRef != null && typeof textareaRef !== 'function' && textareaRef && textareaRef.current) {
       textareaRef.current.style.height = '0px';
       const { scrollHeight } = textareaRef.current;
       textareaRef.current.style.height = `${scrollHeight}px`;
     }
-  }, [message]);
+  }, [message, textareaRef]);
   return (
     <textarea
       {...props}
       ref={textareaRef}
+      style={{ resize: 'none', minHeight: 200 }}
       className="w-full focus:ring-0 focus:stroke-0 focus:outline-none mb-6"
       value={message}
       onChange={handleChangeText}
       placeholder="Tulis pesan rahasia mu disini..."
     />
   );
-};
+});
 
 const ButtonSendMessage: React.FC = () => {
   const [create] = useSendMessageMutation();

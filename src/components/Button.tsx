@@ -7,7 +7,7 @@ export const Button: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({ clas
       type="button"
       {...props}
       className={clsx(
-        'w-full h-10 flex justify-center text-white bg-indigo-500 rounded-full px-3 pt-2 font-bold',
+        'w-full h-10 flex justify-center text-white bg-gray-900 rounded-full px-3 pt-2 font-bold',
         className
       )}
     >

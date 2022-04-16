@@ -46,6 +46,8 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/no-empty-function': [0],
+    'react/require-default-props': [0],
     'react/jsx-filename-extension': [0],
     'react/jsx-props-no-spreading': [0],
     'react/prop-types': [0],

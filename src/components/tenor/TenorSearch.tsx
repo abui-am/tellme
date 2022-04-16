@@ -9,7 +9,7 @@ import { Result, Tag } from '@/typings/tenor';
 
 import TextField from '../field/TextField';
 
-const TenorSearch = () => {
+const TenorSearch: React.FC = () => {
   const [query, setQuery] = useState('');
 
   const [search, { data }] = useSearchMutation();

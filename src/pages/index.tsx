@@ -17,10 +17,10 @@ export default function Home() {
   const { data: posts } = useGetPostsByProfileIdQuery('ei45m4AqaNHdXS6Qy7WN');
   return (
     <div>
-      <div className="h-72 bg-indigo-500 w-full flex justify-center absolute top-0" style={{ zIndex: -1 }} />
+      <div className="h-72 bg-gray-200 w-full flex justify-center absolute top-0" style={{ zIndex: -1 }} />
 
       <section id="main" className="max-w-screen-lg ml-auto mr-auto">
-        <section className="w-full flex justify-center z-10">
+        <section className="w-full flex justify-center z-10 mb-6">
           <div className="mt-44 flex flex-col items-center bg-white rounded-3xl border mx-4 w-full relative">
             <img
               alt="Profile"
@@ -29,17 +29,16 @@ export default function Home() {
             />
             <div className="mt-20 flex flex-col items-center">
               <h1 className="mb-2 text-xl font-bold text-gray-800">{data?.data?.fullName}</h1>
-              <span className="mb-8 text-gray-700">{data?.data?.description}</span>
+              <span className="mb-6 text-gray-700">{data?.data?.description}</span>
             </div>
+            <section className="px-3 mb-3 w-full">
+              <Button onClick={handleClickButton}>Kirim pesan rahasia</Button>
+              <CreateMessageModal />
+            </section>
           </div>
         </section>
-        <section className="px-3 mb-6">
-          <Button onClick={handleClickButton} className="mt-6">
-            Kirim pesan rahasia
-          </Button>
-          <CreateMessageModal />
-        </section>
-        <section className="px-3 border-b">
+
+        <section className="px-4 border-b">
           <h2 className="font-bold mb-4 text-xl text-gray-800">Linimasa</h2>
         </section>
         <section className="max-w-xl ml-auto mr-auto">
@@ -49,7 +48,7 @@ export default function Home() {
         </section>
       </section>
 
-      <footer className="px-3 mt-6 flex justify-center items-center bg-gray-100 text-gray-400 h-12">v.0.0.0.01</footer>
+      <footer className="px-4 mt-6 flex justify-center items-center bg-gray-100 text-gray-400 h-12">v.0.0.0.01</footer>
     </div>
   );
 }
