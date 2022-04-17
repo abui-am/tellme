@@ -1,9 +1,10 @@
 import clsx from 'clsx';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { parseTimeStamp } from '@/helpers/date';
 import { useKeyPressEnter } from '@/hooks/useKeyPress';
-import { useGetPostsByProfileIdQuery, usePostCommentMutation } from '@/services/profile';
+import { useGetPostsByProfileIdQuery, useGetProfileByUsernameQuery, usePostCommentMutation } from '@/services/profile';
 import { Comment, Data } from '@/typings/posts';
 
 import TextField from '../field/TextField';
@@ -66,7 +67,13 @@ const MessageCard: React.FC<{ message: Message; withNoBorder: boolean }> = ({ wi
 const CommentInput = ({ withDecorator = false, postId = '' }) => {
   const [create] = usePostCommentMutation();
   const [comment, setComment] = useState('');
-  const { refetch } = useGetPostsByProfileIdQuery('ei45m4AqaNHdXS6Qy7WN');
+  const { query } = useRouter();
+  const { data } = useGetProfileByUsernameQuery(query?.id as string, {
+    skip: !query?.id,
+  });
+  const { refetch } = useGetPostsByProfileIdQuery(data?.uid as string, {
+    skip: !data?.uid,
+  });
 
   const sendMessage = async () => {
     await create({
@@ -96,6 +103,7 @@ const CommentInput = ({ withDecorator = false, postId = '' }) => {
       </div>
       <div className="pt-6 pb-2 w-full flex-1">
         <TextField
+          name="text"
           onClickButton={sendMessage}
           className="rounded-full border w-full px-2"
           value={comment}

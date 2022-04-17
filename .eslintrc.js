@@ -43,7 +43,7 @@ module.exports = {
     'simple-import-sort/exports': 'error',
     'simple-import-sort/sort': 'off',
     '@typescript-eslint/indent': [0],
-    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-unused-vars': ['warn'],
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/no-empty-function': [0],

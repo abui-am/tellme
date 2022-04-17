@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { authApi } from '@/services/auth';
 import { profileApi } from '@/services/profile';
 import { tenorApi } from '@/services/tenorApi';
 
@@ -11,6 +12,8 @@ const store = configureStore({
   reducer: {
     [tenorApi.reducerPath]: tenorApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
+    [authApi.reducerPath]: profileApi.reducer,
+
     postMessage: postMessageSlice,
     app: appSlice,
   },

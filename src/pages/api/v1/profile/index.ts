@@ -1,11 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { db } from '@/backend/firebase/admin';
-import createResult from '@/backend/utils/createResult';
 import { cors } from '@/backend/utils/middlewares';
+import { responseBuilder } from '@/backend/utils/responseUtils';
+import { db } from '@/firebase/admin';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   await cors(req, res);
+  const rb = responseBuilder(req, res);
 
   if (req.method === 'GET') {
     try {
@@ -15,8 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .doc(id as string)
         .get();
 
-      res.status(200).json(createResult(doc.data()));
-      res.end();
+      rb.success(doc.data());
     } catch (e) {
       res.status(500).json({ message: e });
       res.end();

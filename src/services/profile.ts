@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-hot-toast';
 
 import { CommentPayload, CreatePostPayload, Posts } from '@/typings/posts';
+import { ProfileStored } from '@/typings/profile';
 
 // Create our baseQuery instance
 const baseQuery = fetchBaseQuery({
@@ -14,21 +15,22 @@ export interface Data {
   fullName: string;
 }
 
-export interface Profile {
-  data: Data;
-  message: string;
-  status: number;
-}
-
 // profile
 export const profileApi = createApi({
   baseQuery,
   tagTypes: ['Profile', 'ProfilePost'],
   reducerPath: 'profileApi',
   endpoints: (build) => ({
-    getProfileById: build.query<Profile, string>({
+    getProfileById: build.query<ProfileStored, string>({
       query: (id) => `/profile/${id}`,
-      providesTags: (result) => [{ type: 'Profile', id: result?.data.username }],
+      providesTags: (result) => [{ type: 'Profile', id: result?.uid }],
+    }),
+    getProfileByUsername: build.query<ProfileStored, string>({
+      query: (username) => `/profile/username/${username}`,
+      providesTags: (result) => [{ type: 'Profile', username: result?.username }],
+      transformResponse: (res: { data: ProfileStored }) => {
+        return res?.data;
+      },
     }),
     getPostsByProfileId: build.query<Posts, string>({
       query: (id) => `/profile/${id}/posts`,
@@ -67,5 +69,10 @@ export const profileApi = createApi({
   }),
 });
 
-export const { useGetProfileByIdQuery, useGetPostsByProfileIdQuery, usePostCommentMutation, useSendMessageMutation } =
-  profileApi;
+export const {
+  useGetProfileByIdQuery,
+  useGetPostsByProfileIdQuery,
+  usePostCommentMutation,
+  useSendMessageMutation,
+  useGetProfileByUsernameQuery,
+} = profileApi;

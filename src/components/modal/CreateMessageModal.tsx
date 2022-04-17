@@ -17,7 +17,7 @@ import {
   selectPostMessage,
   setMessage,
 } from '@/redux/slices/postMessageSlice';
-import { useGetPostsByProfileIdQuery, useSendMessageMutation } from '@/services/profile';
+import { useGetPostsByProfileIdQuery, useGetProfileByUsernameQuery, useSendMessageMutation } from '@/services/profile';
 import { CreatePostPayload } from '@/typings/posts';
 
 import { Button } from '../Button';
@@ -178,7 +178,12 @@ const ButtonSendMessage: React.FC = () => {
   const message = useSelector(selectPostMessage);
   const router = useRouter();
   const dispatch = useDispatch();
-  const { refetch } = useGetPostsByProfileIdQuery('ei45m4AqaNHdXS6Qy7WN');
+  const { data } = useGetProfileByUsernameQuery(router?.query?.id as string, {
+    skip: !router?.query?.id,
+  });
+  const { refetch } = useGetPostsByProfileIdQuery(data?.uid ?? '', {
+    skip: !data?.uid,
+  });
 
   const handleSend = async () => {
     const payload: CreatePostPayload = {
@@ -187,11 +192,10 @@ const ButtonSendMessage: React.FC = () => {
         url: imageUrl,
       },
       message,
-      profileId: 'ei45m4AqaNHdXS6Qy7WN',
+      profileId: data?.uid,
     };
 
     await create(payload);
-    router.push('/');
     refetch();
     dispatch(reset());
   };

@@ -1,10 +1,16 @@
 import clsx from 'clsx';
+import { FieldProps } from 'formik';
 import React, { useState } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 
-const TextField: React.FC<
-  React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, any> & { onClickButton?: () => void }
-> = ({ className, onClickButton = () => {}, ...props }) => {
+export type TextFieldProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, any> & {
+  onClickButton?: () => void;
+  name: string;
+};
+
+type Props = FieldProps & TextFieldProps;
+
+const TextField: React.FC<TextFieldProps> = ({ className, onClickButton, ...props }) => {
   const [isFocused, setIsFocused] = useState(false);
   const handleFocus = () => {
     setIsFocused(true);
@@ -27,9 +33,20 @@ const TextField: React.FC<
         className="ml-2 focus:none flex-1 bg-transparent w-full outline-none"
         {...props}
       />
-      <button type="button" onClick={onClickButton}>
-        <FiArrowRight className="w-5 h-5 text-slate-500 mr-2 hover:text-indigo-500" />
-      </button>
+      {onClickButton && (
+        <button type="button" onClick={onClickButton}>
+          <FiArrowRight className="w-5 h-5 text-slate-500 mr-2 hover:text-indigo-500" />
+        </button>
+      )}
+    </div>
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const FormikTextField: React.FC<Props> = ({ form: _, field, ...props }) => {
+  return (
+    <div className="mb-4">
+      <TextField {...props} {...field} />
     </div>
   );
 };

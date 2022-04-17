@@ -9,10 +9,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === 'GET') {
     try {
-      const { id } = <{ id: string }>req.query;
-      const snapshot = await db.collection('profile').doc(id).get();
+      const { username } = <{ username: string }>req.query;
+      const snapshot = await db.collection('profile').where('username', '==', username).limit(1).get();
 
-      const dataSnapshot = snapshot.data();
+      const dataSnapshot = snapshot.docs[0].data();
 
       res.status(200).json(
         createResult(

@@ -2,9 +2,9 @@ import { firestore } from 'firebase-admin';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { v4 } from 'uuid';
 
-import { db } from '@/backend/firebase/admin';
 import createResult from '@/backend/utils/createResult';
 import { cors } from '@/backend/utils/middlewares';
+import { db } from '@/firebase/admin';
 import { Comment } from '@/typings/posts';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
