@@ -1,4 +1,5 @@
-import { firestore } from 'firebase';
+import { firestore } from 'firebase-admin';
+
 export type CreatedAt = firestore.Timestamp;
 
 export interface Comment {
@@ -10,6 +11,7 @@ export interface Comment {
 
 export interface Sender {
   profileId: string;
+  imageUrl: string;
   type: string;
   name: string;
 }

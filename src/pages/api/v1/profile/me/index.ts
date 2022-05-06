@@ -12,7 +12,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     try {
       const { authentication } = <{ authentication: string }>req.headers;
-      console.log(req.headers);
       const { uid } = await auth().verifyIdToken(authentication);
       const ref = db.collection('profile').doc(uid);
       const data = (await ref.get()).data();
@@ -20,7 +19,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         message: 'Success',
       });
     } catch (e: any) {
-      console.error(e);
       rb.badRequest(
         {},
         {

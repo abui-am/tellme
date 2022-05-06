@@ -18,7 +18,8 @@ const store = configureStore({
     postMessage: postMessageSlice,
     app: appSlice,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(tenorApi.middleware, profileApi.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(tenorApi.middleware, profileApi.middleware, securedProfileApi.middleware),
 });
 
 export default store;

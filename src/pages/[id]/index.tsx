@@ -52,7 +52,7 @@ export default function Home() {
         <section className="max-w-xl ml-auto mr-auto">
           {!isFetching &&
             posts?.data?.map((data, index) => {
-              return <MessageCard withNoBorder={index === 0} message={data} key={data.id} />;
+              return <MessageCard type="anonymous" withNoBorder={index === 0} message={data} key={data.id} />;
             })}
         </section>
       </section>

@@ -21,23 +21,6 @@ export const profileApi = createApi({
   tagTypes: ['Profile', 'Myself', 'ProfilePost'],
   reducerPath: 'profileApi',
   endpoints: (build) => ({
-    getNewToken: build.mutation({
-      query: () => ({
-        url: 'https://securetoken.googleapis.com/v1/token',
-        params: { key: process.env.NEXT_PUBLIC_FIREBASE_API_KEY },
-        body: {
-          grant_type: 'refresh_token',
-          refresh_token: JSON.parse(localStorage.getItem('auth') ?? '').refreshToken,
-        },
-      }),
-      transformResponse: (body: { refresh_token: string; id_token: string }) => {
-        const auth = JSON.parse(localStorage.getItem('auth') ?? '');
-        auth.refreshToken = body.refresh_token;
-        auth.token = body.id_token;
-        localStorage.setItem('auth', auth);
-      },
-    }),
-
     getProfileById: build.query<ProfileStored, string>({
       query: (id) => `/profile/${id}`,
       providesTags: (result) => [{ type: 'Profile', id: result?.uid }],
@@ -112,5 +95,4 @@ export const {
   useSendMessageMutation,
   useGetProfileByUsernameQuery,
   usePutProfileByIdMutation,
-  useGetNewTokenMutation,
 } = profileApi;
