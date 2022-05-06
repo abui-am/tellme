@@ -2,6 +2,8 @@ import '../styles/global.css';
 
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
 
@@ -10,6 +12,21 @@ import store from '@/redux/store';
 type MyAppProps = AppProps;
 
 function MyApp({ Component, pageProps }: MyAppProps): JSX.Element {
+  const router = useRouter();
+  useEffect(() => {
+    const storedAuth = localStorage.getItem('auth');
+    if (router.pathname !== '/auth/login') {
+      if (storedAuth) {
+        const auth = JSON.parse(storedAuth);
+        if (!auth.refreshToken || !auth.token) {
+          router.push('/auth/login');
+        }
+      } else {
+        router.push('/auth/login');
+      }
+    }
+  }, [router]);
+
   return (
     <div>
       <Head>

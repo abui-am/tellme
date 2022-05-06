@@ -9,6 +9,7 @@ export const responseBuilder = (req: NextApiRequest, res: NextApiResponse) => {
       res.status(200).json(
         createResult(data, {
           status: 'success',
+          code: option?.code,
           message: option?.message ?? 'Berhasil mendapatkan data',
           query: req.query,
         })
@@ -19,6 +20,7 @@ export const responseBuilder = (req: NextApiRequest, res: NextApiResponse) => {
       res.status(BAD_REQUEST).json(
         createResult(data, {
           status: 'bad_request',
+          code: option?.code,
           message: option?.message ?? 'Bad request',
           query: req.query,
         })
@@ -29,6 +31,7 @@ export const responseBuilder = (req: NextApiRequest, res: NextApiResponse) => {
       res.status(UNAUTHORIZED).json(
         createResult(data, {
           status: 'unautorized',
+          code: option?.code,
           message: option?.message ?? 'Tidak memiliki hak akses',
           query: req.query,
         })

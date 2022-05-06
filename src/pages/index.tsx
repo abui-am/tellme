@@ -1,58 +1,40 @@
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 
 import { Button } from '@/components/Button';
 import TextField from '@/components/field/TextField';
-import LoginForm from '@/components/form/LoginForm';
-import { authClient } from '@/firebase/clientApp';
-import { usePostSignUpWithGoogleMutation } from '@/services/auth';
+import { usePutProfileByIdMutation } from '@/services/profile';
+import { useGetMyselfQuery } from '@/services/secured/profile';
+
 const IndexPage = () => {
-  const [credential, setCredential] = useState<{ idToken: string; refreshToken: string } | null>(null);
-  const [signUpWithGoogle] = usePostSignUpWithGoogleMutation();
   const [username, setUsername] = useState('');
+  const [editProfile] = usePutProfileByIdMutation();
+  const { data } = useGetMyselfQuery('');
+  console.log(data, 'ASD');
 
-  const signInWithFirebase = async () => {
-    const googleProvider = new GoogleAuthProvider();
-    signInWithPopup(authClient, googleProvider)
-      .then(async (res) => {
-        const idToken = await res?.user?.getIdToken();
-        const { refreshToken } = res.user;
+  const handleSubmit = async () => {
+    const storedAuth = localStorage.getItem('auth');
+    if (storedAuth) {
+      const auth = JSON.parse(storedAuth);
 
-        setCredential({
-          refreshToken,
-          idToken,
-        });
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
-  const signInToken = async () => {
-    if (credential) {
-      signUpWithGoogle({
-        idToken: credential.idToken,
-        refreshToken: credential.refreshToken,
-        username,
+      editProfile({
+        id: auth.user?.uid,
+        data: {
+          username,
+        },
       });
     }
   };
 
-  return (
-    <div>
-      {credential ? (
-        <>
-          <TextField name="username" onChange={(e) => setUsername(e.target.value)} />
-          <Button onClick={signInToken}>Login</Button>
-        </>
-      ) : (
-        <>
-          <LoginForm />
-          <Button onClick={signInWithFirebase}>Sign In</Button>
-        </>
-      )}
-    </div>
-  );
+  if (!data?.username) {
+    return (
+      <div>
+        <TextField name="username" onChange={(e: any) => setUsername(e.target.value)} />
+        <Button onClick={handleSubmit}>Submit</Button>
+      </div>
+    );
+  }
+  return <div />;
 };
 
 export default IndexPage;

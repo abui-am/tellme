@@ -3,6 +3,7 @@ export type ResultOption =
       message: string;
       status: 200 | 404;
       query: any;
+      code: string;
     }
   | Record<string, any>;
 
@@ -15,6 +16,7 @@ const createResult = (res: any, option?: ResultOption) => {
     data: res,
     message: option?.message ?? MESSAGE.success,
     status: option?.status ?? 200,
+    code: option?.code,
     query: option?.query ?? {},
   };
 };

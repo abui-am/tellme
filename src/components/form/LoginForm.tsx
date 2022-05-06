@@ -1,4 +1,5 @@
 import { Field, Form, Formik } from 'formik';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 import { usePostLoginMutation } from '@/services/auth';
@@ -14,10 +15,12 @@ const initialValues: LoginPayload = {
 
 const LoginForm = () => {
   const [login] = usePostLoginMutation();
+  const router = useRouter();
   const handleSubmit = async (values: LoginPayload) => {
     const res = await login(values);
     if ('data' in res) {
       localStorage.setItem('auth', JSON.stringify(res.data));
+      router.push('/');
     }
   };
   return (

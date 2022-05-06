@@ -6,3 +6,9 @@ export type ProfileStored = {
   imageUrl?: string;
   coverUrl?: string;
 };
+
+export type PutProfileByIdPayload = {
+  description: string;
+  displayName: string;
+  username: string;
+};

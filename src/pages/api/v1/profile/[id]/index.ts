@@ -1,11 +1,15 @@
+import { auth } from 'firebase-admin';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import createResult from '@/backend/utils/createResult';
 import { cors } from '@/backend/utils/middlewares';
+import { responseBuilder } from '@/backend/utils/responseUtils';
 import { db } from '@/firebase/admin';
+import { PutProfileByIdPayload } from '@/typings/profile';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   await cors(req, res);
+  const rb = responseBuilder(req, res);
 
   if (req.method === 'GET') {
     try {
@@ -25,6 +29,42 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.end();
     } catch (e) {
       res.end();
+    }
+  }
+
+  if (req.method === 'PUT') {
+    try {
+      const { authentication } = <{ authentication: string }>req.headers;
+      const { id } = <{ id: string }>req.query;
+      const body = <PutProfileByIdPayload>req.body;
+      const refer = db.collection('profile').doc(id);
+
+      const { uid } = await auth().verifyIdToken(authentication);
+      const dataSnapshot = (await refer.get()).data();
+
+      if (uid !== dataSnapshot?.uid) {
+        rb.unauthorized(
+          {},
+          {
+            message: 'Unauthorized',
+          }
+        );
+      } else {
+        await refer.update(body);
+        const newRefer = db.collection('profile').doc(id);
+        const data = (await newRefer.get()).data();
+        rb.success(data, {
+          message: 'Success',
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      rb.badRequest(
+        {},
+        {
+          message: 'Bad Request',
+        }
+      );
     }
   }
 };
