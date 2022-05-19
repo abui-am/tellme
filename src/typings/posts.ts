@@ -44,3 +44,17 @@ export type CommentPayload = {
   comment: string;
   postId: string;
 };
+
+export type UploadProfilePayload = {
+  file: any;
+};
+
+export type DataUploadProfileResponse = {
+  url: string;
+};
+export type UploadProfileResponse = {
+  data: DataUploadProfileResponse;
+  message: string;
+  status: number;
+  query: any;
+};

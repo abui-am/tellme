@@ -25,7 +25,12 @@ export default function Home() {
   });
   return (
     <div>
-      <div className="h-72 bg-gray-200 w-full flex justify-center absolute top-0" style={{ zIndex: -1 }} />
+      <img
+        alt="bg"
+        className="h-72 w-full bg-gray-200 flex justify-center absolute top-0 object-cover object-top"
+        src={data?.coverUrl}
+        style={{ zIndex: -1 }}
+      />
 
       <section id="main" className="max-w-screen-lg ml-auto mr-auto">
         <section className="w-full flex justify-center z-10 mb-6">

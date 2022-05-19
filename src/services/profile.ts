@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-hot-toast';
 
 import { CommentPayload, CreatePostPayload, Posts } from '@/typings/posts';
-import { ProfileStored, PutProfileByIdPayload } from '@/typings/profile';
+import { ProfileStored } from '@/typings/profile';
 
 // Create our baseQuery instance
 const baseQuery = fetchBaseQuery({
@@ -24,25 +24,6 @@ export const profileApi = createApi({
     getProfileById: build.query<ProfileStored, string>({
       query: (id) => `/profile/${id}`,
       providesTags: (result) => [{ type: 'Profile', id: result?.uid }],
-    }),
-    putProfileById: build.mutation<
-      ProfileStored,
-      {
-        id: string;
-        data: Partial<PutProfileByIdPayload>;
-      }
-    >({
-      invalidatesTags: (result) => [{ type: 'Profile', id: result?.uid }],
-      query: ({ id, data }) => {
-        return {
-          url: `profile/${id}`,
-          method: 'PUT',
-          body: data,
-          headers: {
-            authentication: JSON.parse(localStorage.getItem('auth') ?? '').token,
-          },
-        };
-      },
     }),
     getProfileByUsername: build.query<ProfileStored, string>({
       query: (username) => `/profile/username/${username}`,
@@ -94,5 +75,4 @@ export const {
   usePostCommentMutation,
   useSendMessageMutation,
   useGetProfileByUsernameQuery,
-  usePutProfileByIdMutation,
 } = profileApi;

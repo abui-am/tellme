@@ -1,5 +1,7 @@
 import firebase, { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
+
 const clientCredentials = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -21,4 +23,5 @@ if (typeof window !== 'undefined') {
 }
 
 export const authClient = getAuth(app);
+export const storageClient = getStorage(app);
 export default firebase;

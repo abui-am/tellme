@@ -1,20 +1,16 @@
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react';
 
 import { Button } from '@/components/Button';
 import MessageCard from '@/components/card/MessageCard';
 import TextField from '@/components/field/TextField';
-import {
-  useGetPostsByProfileIdQuery,
-  useGetProfileByUsernameQuery,
-  usePutProfileByIdMutation,
-} from '@/services/profile';
-import { useGetMyselfQuery } from '@/services/secured/profile';
+import ProfileForm from '@/components/form/ProfileForm';
+import { useGetPostsByProfileIdQuery, useGetProfileByUsernameQuery } from '@/services/profile';
+import { useGetMyselfQuery, usePutProfileByIdMutation } from '@/services/secured/profile';
 
 const IndexPage = () => {
   const [username, setUsername] = useState('');
   const [editProfile] = usePutProfileByIdMutation();
+  const [isOpen, setIsOpen] = useState(false);
   const { data } = useGetMyselfQuery('');
 
   const handleSubmit = async () => {
@@ -31,7 +27,7 @@ const IndexPage = () => {
     }
   };
 
-  const { data: profile } = useGetProfileByUsernameQuery(data?.username as string, {
+  const { data: profile, isFetching: isFetchingProfile } = useGetProfileByUsernameQuery(data?.username as string, {
     skip: !data?.username,
   });
 
@@ -39,7 +35,7 @@ const IndexPage = () => {
     skip: !data?.uid,
   });
 
-  if (!data?.username) {
+  if (!data?.username && !isFetchingProfile) {
     return (
       <div>
         <TextField name="username" onChange={(e: any) => setUsername(e.target.value)} />
@@ -49,7 +45,12 @@ const IndexPage = () => {
   }
   return (
     <div>
-      <div className="h-72 bg-gray-200 w-full flex justify-center absolute top-0" style={{ zIndex: -1 }} />
+      <img
+        alt="bg"
+        className="h-72 w-full bg-gray-200 flex justify-center absolute top-0 object-cover object-top"
+        src={data?.coverUrl}
+        style={{ zIndex: -1 }}
+      />
 
       <section id="main" className="max-w-screen-lg ml-auto mr-auto">
         <section className="w-full flex justify-center z-10 mb-6">
@@ -60,8 +61,23 @@ const IndexPage = () => {
               className="w-44 h-44 rounded-full border-4 border-white bg-gray-300 object-cover absolute -translate-y-28"
             />
             <div className="mt-20 flex flex-col items-center">
-              <h1 className="mb-2 text-xl font-bold text-gray-800">{profile?.displayName}</h1>
-              <span className="mb-6 text-gray-700">{profile?.username}</span>
+              <h1 className="text-xl font-bold text-gray-800">{profile?.displayName}</h1>
+              <span className="mb-2 text-gray-700">@{profile?.username}</span>
+              <span className="mb-6 text-gray-700">{profile?.description}</span>
+              <Button
+                className="mb-6"
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+              >
+                Edit Profile
+              </Button>
+              <EditProfileModal
+                isOpen={isOpen}
+                handleClose={() => {
+                  setIsOpen(false);
+                }}
+              />
             </div>
           </div>
         </section>
@@ -79,6 +95,19 @@ const IndexPage = () => {
 
       <footer className="px-4 mt-6 flex justify-center items-center bg-gray-100 text-gray-400 h-12">v.0.0.0.01</footer>
     </div>
+  );
+};
+
+const EditProfileModal: React.FC<{ isOpen: boolean; handleClose: () => void }> = ({ isOpen, handleClose }) => {
+  return isOpen ? (
+    <div
+      style={{ width: '100vw', height: typeof window !== 'undefined' ? window.innerHeight : '100w' }}
+      className="fixed bottom-0 top-0 left-0 bg-white p-4 z-10"
+    >
+      <ProfileForm handleClose={handleClose} />
+    </div>
+  ) : (
+    <div />
   );
 };
 

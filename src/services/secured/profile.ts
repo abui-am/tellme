@@ -1,8 +1,14 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import toast from 'react-hot-toast';
 
-import { CommentPayload, Posts } from '@/typings/posts';
-import { ProfileStored } from '@/typings/profile';
+import {
+  CommentPayload,
+  DataUploadProfileResponse,
+  Posts,
+  UploadProfilePayload,
+  UploadProfileResponse,
+} from '@/typings/posts';
+import { ProfileStored, PutProfileByIdPayload } from '@/typings/profile';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: '/api/v1',
@@ -64,7 +70,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 // profile
 export const securedProfileApi = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['SecuredProfile', 'ProfilePost'],
+  tagTypes: ['SecuredProfile', 'ProfilePost', 'Profile'],
   reducerPath: 'securedProfileApi',
   endpoints: (build) => ({
     getMyself: build.query<ProfileStored, any>({
@@ -93,7 +99,57 @@ export const securedProfileApi = createApi({
         return res;
       },
     }),
+    putProfileById: build.mutation<
+      ProfileStored,
+      {
+        id: string;
+        data: Partial<PutProfileByIdPayload>;
+      }
+    >({
+      invalidatesTags: ['SecuredProfile'],
+      query: ({ id, data }) => {
+        return {
+          url: `profile/${id}`,
+          method: 'PUT',
+          body: data,
+        };
+      },
+    }),
+    uploadProfile: build.mutation<DataUploadProfileResponse, UploadProfilePayload>({
+      query: ({ file }) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return {
+          url: `storage/upload-profile-image`,
+          method: 'POST',
+          body: formData,
+        };
+      },
+      transformResponse: (res: UploadProfileResponse) => {
+        return res.data;
+      },
+    }),
+    uploadProfileCover: build.mutation<DataUploadProfileResponse, UploadProfilePayload>({
+      query: ({ file }) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return {
+          url: `storage/upload-profile-cover`,
+          method: 'POST',
+          body: formData,
+        };
+      },
+      transformResponse: (res: UploadProfileResponse) => {
+        return res.data;
+      },
+    }),
   }),
 });
 
-export const { useGetMyselfQuery, usePostCommentAsAuthorMutation } = securedProfileApi;
+export const {
+  useGetMyselfQuery,
+  useUploadProfileMutation,
+  useUploadProfileCoverMutation,
+  usePostCommentAsAuthorMutation,
+  usePutProfileByIdMutation,
+} = securedProfileApi;
