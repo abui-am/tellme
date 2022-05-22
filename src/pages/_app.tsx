@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: MyAppProps): JSX.Element {
   const router = useRouter();
   useEffect(() => {
     const storedAuth = localStorage.getItem('auth');
-    if (router.pathname !== '/auth/login') {
+    if (router.pathname !== '/auth/login' && router.pathname !== '/auth/sign-up') {
       if (storedAuth) {
         const auth = JSON.parse(storedAuth);
         if (!auth.refreshToken || !auth.token) {

@@ -1,3 +1,4 @@
+// ...
 import { configureStore } from '@reduxjs/toolkit';
 
 import { authApi } from '@/services/auth';
@@ -7,7 +8,10 @@ import { tenorApi } from '@/services/tenorApi';
 
 import appSlice from './slices/appSlice';
 import postMessageSlice from './slices/postMessageSlice';
-// ...
+
+/**
+ * Log a warning and show a toast!
+ */
 
 const store = configureStore({
   reducer: {

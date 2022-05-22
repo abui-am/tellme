@@ -16,3 +16,10 @@ export type PutProfileByIdPayload = {
   imageUrl?: string;
   coverUrl?: string;
 };
+
+export type ProfileStoredResponse = {
+  data: ProfileStored;
+  message: string;
+  status: number;
+  query: any;
+};

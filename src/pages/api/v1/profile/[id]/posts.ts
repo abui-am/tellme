@@ -48,6 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
         message: message ?? '',
         sender: {
+          imageUrl: sender?.imageUrl ?? '',
           name: sender?.name ?? 'Anonim',
           profileId: sender?.profileId ?? '',
           type: sender?.type ?? 'Anonymous',

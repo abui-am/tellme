@@ -35,5 +35,4 @@ export interface LoginResponse {
 export interface SignUpWithGoogle {
   idToken: string;
   refreshToken: string;
-  username: string;
 }

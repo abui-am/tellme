@@ -13,9 +13,11 @@ export const authApi = createApi({
   baseQuery,
   tagTypes: ['Auth'],
   reducerPath: 'auth',
+
   endpoints: (build) => ({
     postSignUp: build.mutation<PostLoginData, SignUpPayload>({
       invalidatesTags: ['Auth'],
+
       query: (body) => {
         return {
           url: `sign-up`,
@@ -24,7 +26,7 @@ export const authApi = createApi({
         };
       },
       transformResponse: (res: LoginResponse) => {
-        toast.success(res.message);
+        toast.success(res?.message);
         return res.data;
       },
     }),
@@ -38,7 +40,7 @@ export const authApi = createApi({
         };
       },
       transformResponse: (res: LoginResponse) => {
-        toast.success(res.message);
+        toast.success(res?.message);
         return res.data;
       },
     }),

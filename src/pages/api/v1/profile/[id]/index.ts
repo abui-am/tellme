@@ -50,12 +50,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           }
         );
       } else {
-        await refer.update(body);
-        const newRefer = db.collection('profile').doc(id);
-        const data = (await newRefer.get()).data();
-        rb.success(data, {
-          message: 'Success',
-        });
+        const isExist = await checkIfUsernameIsExist(body.username);
+        if (!isExist) {
+          await refer.update(body);
+          const newRefer = db.collection('profile').doc(id);
+          const data = (await newRefer.get()).data();
+          rb.success(data, {
+            message: 'Success',
+          });
+        } else {
+          rb.unauthorized(
+            {},
+            {
+              message: 'Username already exists',
+            }
+          );
+        }
       }
     } catch (e) {
       console.error(e);
@@ -68,3 +78,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 };
+
+export async function checkIfUsernameIsExist(username: string) {
+  const snapshot = await db.collection('profile').where('username', '==', username).get();
+  console.log(snapshot);
+  return !snapshot.empty;
+}

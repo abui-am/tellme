@@ -8,7 +8,7 @@ import {
   UploadProfilePayload,
   UploadProfileResponse,
 } from '@/typings/posts';
-import { ProfileStored, PutProfileByIdPayload } from '@/typings/profile';
+import { ProfileStored, ProfileStoredResponse, PutProfileByIdPayload } from '@/typings/profile';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: '/api/v1',
@@ -113,6 +113,10 @@ export const securedProfileApi = createApi({
           method: 'PUT',
           body: data,
         };
+      },
+      transformResponse: (res: ProfileStoredResponse) => {
+        toast.success(res?.message);
+        return res?.data;
       },
     }),
     uploadProfile: build.mutation<DataUploadProfileResponse, UploadProfilePayload>({

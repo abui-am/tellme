@@ -21,6 +21,18 @@ export const profileApi = createApi({
   tagTypes: ['Profile', 'Myself', 'ProfilePost'],
   reducerPath: 'profileApi',
   endpoints: (build) => ({
+    getProfileByToken: build.mutation<ProfileStored, string>({
+      query: (token) => ({
+        url: `profile/me`,
+        method: 'GET',
+        headers: {
+          authentication: token,
+        },
+      }),
+      transformResponse: (res: any) => {
+        return res?.data;
+      },
+    }),
     getProfileById: build.query<ProfileStored, string>({
       query: (id) => `/profile/${id}`,
       providesTags: (result) => [{ type: 'Profile', id: result?.uid }],
@@ -75,4 +87,5 @@ export const {
   usePostCommentMutation,
   useSendMessageMutation,
   useGetProfileByUsernameQuery,
+  useGetProfileByTokenMutation,
 } = profileApi;

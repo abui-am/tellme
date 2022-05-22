@@ -2,30 +2,15 @@ import React, { useState } from 'react';
 
 import { Button } from '@/components/Button';
 import MessageCard from '@/components/card/MessageCard';
-import TextField from '@/components/field/TextField';
+import LayoutMain from '@/components/container/LayoutMain';
 import ProfileForm from '@/components/form/ProfileForm';
+import UsernameForm from '@/components/form/UsernameForm';
 import { useGetPostsByProfileIdQuery, useGetProfileByUsernameQuery } from '@/services/profile';
-import { useGetMyselfQuery, usePutProfileByIdMutation } from '@/services/secured/profile';
+import { useGetMyselfQuery } from '@/services/secured/profile';
 
 const IndexPage = () => {
-  const [username, setUsername] = useState('');
-  const [editProfile] = usePutProfileByIdMutation();
   const [isOpen, setIsOpen] = useState(false);
-  const { data } = useGetMyselfQuery('');
-
-  const handleSubmit = async () => {
-    const storedAuth = localStorage.getItem('auth');
-    if (storedAuth) {
-      const auth = JSON.parse(storedAuth);
-
-      editProfile({
-        id: auth.user?.uid,
-        data: {
-          username,
-        },
-      });
-    }
-  };
+  const { data, refetch } = useGetMyselfQuery('');
 
   const { data: profile, isFetching: isFetchingProfile } = useGetProfileByUsernameQuery(data?.username as string, {
     skip: !data?.username,
@@ -37,19 +22,20 @@ const IndexPage = () => {
 
   if (!data?.username && !isFetchingProfile) {
     return (
-      <div>
-        <TextField name="username" onChange={(e: any) => setUsername(e.target.value)} />
-        <Button onClick={handleSubmit}>Submit</Button>
-      </div>
+      <LayoutMain id="username" className="pt-16">
+        <UsernameForm
+          onSubmit={() => {
+            refetch();
+          }}
+        />
+      </LayoutMain>
     );
   }
   return (
     <div>
-      <img
-        alt="bg"
+      <div
         className="h-72 w-full bg-gray-200 flex justify-center absolute top-0 object-cover object-top"
-        src={data?.coverUrl}
-        style={{ zIndex: -1 }}
+        style={{ zIndex: -1, backgroundImage: `url(${data?.coverUrl})` }}
       />
 
       <section id="main" className="max-w-screen-lg ml-auto mr-auto">

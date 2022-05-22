@@ -44,8 +44,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           }
         );
       }
-    } catch (e) {
-      res.end();
+    } catch (e: any) {
+      rb.badRequest(
+        {},
+        {
+          message: e?.message,
+        }
+      );
     }
   }
 };
