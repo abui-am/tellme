@@ -40,18 +40,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const refer = db.collection('profile').doc(id);
 
       const { uid } = await auth().verifyIdToken(authentication);
-      const dataSnapshot = (await refer.get()).data();
 
-      if (uid !== dataSnapshot?.uid) {
+      if (uid !== id) {
         rb.unauthorized(
           {},
           {
-            message: 'Unauthorized',
+            message: 'Unauthorized, UID different',
           }
         );
       } else {
-        const isExist = await checkIfUsernameIsExist(body.username);
-        if (!isExist) {
+        const isExist = await checkIfUsernameIsExist(body?.username ?? '');
+        if (!body.username || !isExist) {
           await refer.update(body);
           const newRefer = db.collection('profile').doc(id);
           const data = (await newRefer.get()).data();
@@ -67,12 +66,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           );
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       rb.badRequest(
         {},
         {
-          message: 'Bad Request',
+          message: e.message,
         }
       );
     }

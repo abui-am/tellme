@@ -10,7 +10,7 @@ export type ProfileStored = {
 
 export type PutProfileByIdPayload = {
   displayName: string;
-  username: string;
+  username?: string;
   description?: string;
   email: string;
   imageUrl?: string;

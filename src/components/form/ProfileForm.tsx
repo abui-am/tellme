@@ -31,7 +31,7 @@ const ProfileForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) => 
 
   const { data } = useGetMyselfQuery('');
   const handleSubmit = async (values: PutProfileByIdPayload) => {
-    const { imageUrl, coverUrl, ...rest } = values;
+    const { imageUrl, coverUrl, username: _, ...rest } = values;
 
     const jsonBody: PutProfileByIdPayload = rest;
 
@@ -43,10 +43,14 @@ const ProfileForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) => 
       const cover = await uploadCover({ file: coverUrl });
       if ('data' in cover) jsonBody.coverUrl = cover.data.url;
     }
-    await editProfile({
+
+    const res = await editProfile({
       id: data?.uid ?? '',
       data: jsonBody,
     });
+    if (res) {
+      await handleClose();
+    }
   };
   return (
     <Formik onSubmit={handleSubmit} enableReinitialize initialValues={getInitialValues(data)}>

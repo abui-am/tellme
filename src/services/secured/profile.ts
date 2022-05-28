@@ -78,7 +78,7 @@ export const securedProfileApi = createApi({
         url: `profile/me`,
         method: 'GET',
       }),
-      providesTags: () => [{ type: 'SecuredProfile' }],
+      providesTags: () => ['SecuredProfile'],
       transformResponse: (res: any) => {
         return res.data;
       },
@@ -106,7 +106,7 @@ export const securedProfileApi = createApi({
         data: Partial<PutProfileByIdPayload>;
       }
     >({
-      invalidatesTags: ['SecuredProfile'],
+      invalidatesTags: () => ['SecuredProfile'],
       query: ({ id, data }) => {
         return {
           url: `profile/${id}`,
